@@ -1,6 +1,6 @@
 import os, sys, uvicorn, time
-from fastapi import FastAPI, Depends, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Depends, Header, HTTPException
 
 app = FastAPI()
 
@@ -8,11 +8,13 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_headers=["*"],
-    allow_CREDENTIALS=True,
+    allow_credentials=True,
     allow_methods=["GET", "POST"],
 )
 PROCESSING = False
-RATES2NGN = {}
+RATES2NGN = {
+    "a":"a"
+}
 CREDENTIALS = [
     "uhmmmmmmmm",
     "uhmmmmmmmmm",
@@ -25,10 +27,11 @@ def get_api_key(api_key: str = Header(...)):
 
 
 @app.post("/update/keys")
-def update_kyes(valid_keys: dict):
+def update_keys(valid_keys: dict):
     for key in list(RATES2NGN.keys()):
         if key not in valid_keys['keys']:
             del RATES2NGN[key]
+    return RATES2NGN
 
 @app.post("/update/rate")
 def set_rates2ngn(data: dict, api_key: str = Depends(get_api_key)):
@@ -42,7 +45,7 @@ async def get_value(key: str):
     return RATES2NGN.get(key)
 
 @app.get("/")
-async def get_rates2ngn(key: str):
+async def get_rates2ngn():
     return RATES2NGN
 
 if __name__ == "__main__":
