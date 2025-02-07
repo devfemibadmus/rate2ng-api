@@ -31,20 +31,19 @@ def update_kyes(valid_keys: dict):
             del RATES2NGN[key]
 
 @app.post("/update/rate")
-def set_value(data: dict, api_key: str = Depends(get_api_key)):
+def set_rates2ngn(data: dict, api_key: str = Depends(get_api_key)):
     if api_key in CREDENTIALS:
         for key, value in data.items():
             RATES2NGN[key] = value
-    return RATES2NGN if RATES2NGN else {}
+    return RATES2NGN
 
 @app.get("/{key}")
 async def get_value(key: str):
-    value = RATES2NGN.get(key)
-    return value
+    return RATES2NGN.get(key)
 
 @app.get("/")
-async def get_data(key: str):
-    return storage
+async def get_rates2ngn(key: str):
+    return RATES2NGN
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
