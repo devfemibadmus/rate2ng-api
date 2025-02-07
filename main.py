@@ -12,9 +12,7 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
 )
 PROCESSING = False
-RATES2NGN = {
-    "a":"a"
-}
+RATES2NGN = {}
 CREDENTIALS = [
     "uhmmmmmmmm",
     "uhmmmmmmmmm",
