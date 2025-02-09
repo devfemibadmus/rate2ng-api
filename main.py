@@ -1,6 +1,6 @@
-import os, sys, uvicorn, time
+import os, sys, uvicorn, time, websockets
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, Depends, Header, HTTPException
+from fastapi import FastAPI, Depends, Header, HTTPException, WebSocket
 
 app = FastAPI()
 
@@ -104,11 +104,11 @@ secrete_credential = "uhmmmmmmmmmmmmmmmmmmmm"
 
 
 @app.websocket("/update/rates")
-def websocket_set_rates(websocket: WebSocket):
+async def websocket_set_rates(websocket: WebSocket):
     await websocket.accept()
     headers = websocket.headers
     api_key = headers.get("api_key")
-    if api_key == secrete_credential:
+    if api_key != secrete_credential:
         await websocket.close(code=1008)
         return
     while True:
