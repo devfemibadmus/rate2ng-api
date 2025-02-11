@@ -117,7 +117,7 @@ async def websocket_set_rates(websocket: WebSocket):
             rates[key] = value
 
 @app.get("/rates")
-def get_rates(api_key: str = Header(...)):
+def get_rates(api_key: str):
     if api_key not in app_credentials:
         raise HTTPException(status_code=403, detail="Invalid API key")
     return rates
