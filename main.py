@@ -1,8 +1,14 @@
 import os, sys, uvicorn, time, websockets
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, Depends, Header, HTTPException, WebSocket
+from fastapi import FastAPI, Depends, Header, HTTPException, WebSocket, Request
 
+limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -117,13 +123,15 @@ async def websocket_set_rates(websocket: WebSocket):
             rates[key] = value
 
 @app.get("/rates")
-def get_rates(api_key: str):
+@limiter.limit("1/minute")
+def get_rates(api_key: str, request: Request):
     if api_key not in app_credentials:
         raise HTTPException(status_code=403, detail="Invalid API key")
     return rates
 
 @app.get("/")
-async def get_currencies():
+@limiter.limit("1/minute")
+async def get_currencies(request: Request):
     return currencies
 
 if __name__ == "__main__":
