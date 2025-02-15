@@ -7,7 +7,7 @@ executor = ThreadPoolExecutor(max_workers=10)
 stop_flag = threading.Event()
 async_stop_flag = asyncio.Event()
 
-host = "127.0.0.1:8000"
+host = "r.mediasaver.link"
 api_key = "uhmmmmmmmmmmmmmmmmmmmm"
 currencies = {
     "USD-NGN": {},
@@ -40,7 +40,7 @@ def update_rates_from_google_finance(ticker):
 async def update_rates():
     while not stop_flag.is_set() and not async_stop_flag.is_set():
         try:
-            async with websockets.connect(f"ws://{host}/update/rates", extra_headers={"api_key": api_key}) as websocket:
+            async with websockets.connect(f"ws://{host}/update/rates/", extra_headers={"api_key": api_key}) as websocket:
                 while not stop_flag.is_set() and not async_stop_flag.is_set():
                     await websocket.send(json.dumps(currencies))
                     print("Sent rates to WebSocket server")

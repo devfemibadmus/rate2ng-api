@@ -109,7 +109,7 @@ app_credentials = [
 secrete_credential = "uhmmmmmmmmmmmmmmmmmmmm"
 
 
-@app.websocket("/update/rates")
+@app.websocket("/update/rates/")
 async def websocket_set_rates(websocket: WebSocket):
     await websocket.accept()
     headers = websocket.headers
